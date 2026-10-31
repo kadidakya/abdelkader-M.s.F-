@@ -7,7 +7,11 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
+      background-image: url('image_3.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
       margin: 0;
       padding: 20px;
       display: flex;
@@ -17,13 +21,14 @@
       min-height: 100vh;
     }
     .container {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.92);
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       max-width: 480px;
       width: 100%;
       text-align: center;
+      z-index: 1;
     }
     h2 {
       color: #333;
@@ -81,7 +86,10 @@
     .footer {
       margin-top: 20px;
       font-size: 14px;
-      color: #777;
+      color: #333;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 5px 10px;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -89,11 +97,11 @@
 
   <div class="container">
     <h2>أداة M.S.F لتحميل الفيديوهات</h2>
-    <p>ضع رابط الفيديو لتنزيله أو للحصول على أمر Termux جاهز:</p>
+    <p>ضع رابط الفيديو لتخزينه في ذاكرة الهاتف أو نسخ أمر Termux:</p>
     
     <div class="input-group">
       <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/... لصق الرابط هنا">
-      <button class="btn-action" onclick="downloadDirectly()">تنزيل مباشر من الموقع</button>
+      <button class="btn-action" onclick="downloadToPhone()">تنزيل وتخزين في الهاتف</button>
       <button class="btn-action btn-termux" onclick="copyGetCommand()">نسخ أمر get لـ Termux</button>
     </div>
 
@@ -101,11 +109,11 @@
   </div>
 
   <div class="footer">
-    <p>© جميع الحقوق محفوظة - متجر M.S.F</p>
+    <p>© جميع الحقوق محفوظة - m.s.f M.S.F</p>
   </div>
 
   <script>
-    async function downloadDirectly() {
+    async function downloadToPhone() {
       const url = document.getElementById('videoUrl').value.trim();
       const resultArea = document.getElementById('resultArea');
       
@@ -114,7 +122,7 @@
         return;
       }
 
-      resultArea.innerHTML = 'جاري استخراج الفيديو بدون علامة مائية...';
+      resultArea.innerHTML = 'جاري جلب الفيديو بدون علامة مائية لتحميله...';
 
       try {
         const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
@@ -122,9 +130,11 @@
 
         if(data && data.code === 0 && data.data.play) {
           const downloadLink = data.data.play;
+          
+          // إنشاء رابط تحميل مباشر يجبر المتصفح على تخزين الملف في ذاكرة الهاتف
           resultArea.innerHTML = `
-            <p style="color: green; font-weight: bold;">تم تجهيز الفيديو!</p>
-            <a href="${downloadLink}" target="_blank" class="btn-action" style="display:inline-block; margin-top:10px;">تحميل الملف الآن</a>
+            <p style="color: green; font-weight: bold;">تم تجهيز الفيديو بنجاح!</p>
+            <a href="${downloadLink}" download="video_MSF.mp4" target="_blank" class="btn-action" style="display:inline-block; margin-top:10px;">اضغط هنا لحفظ الفيديو في الهاتف</a>
           `;
         } else {
           resultArea.innerHTML = '<p style="color: red;">خطأ في جلب الفيديو، تأكد من صحة الرابط.</p>';
@@ -143,13 +153,12 @@
       const command = `get "${url}"`;
       navigator.clipboard.writeText(command);
       document.getElementById('resultArea').innerHTML = `
-        <p style="color: #008000; font-weight: bold;">تم نسخ الأمر حافظتك!</p>
-        <code style="background:#eee; padding:5px 10px; border-radius:5px; display:inline-block;">${command}</code>
-        <p style="font-size:12px; color:#555;">افتح Termux والصق الأمر مباشرة ليتم التحميل.</p>
+        <p style="color: #008000; font-weight: bold;"> !</p>
+        <code style="background:#eee; padding:5px 10px; border-radius:5px; display:inline-block; font-family: monospace; color: #1e1e1e;">${command}</code>
+        <p style="font-size:12px; color:#555;">افتح Termux والصق  .</p>
       `;
     }
   </script>
 
 </body>
 </html>
-
