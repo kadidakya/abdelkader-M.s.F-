@@ -3,191 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>abdelkader M.s.F - المتجر التجاري</title>
+    <title>متجر عبد القادر - أفضل العروض والتقنيات</title>
     <style>
-        body {
-            font-family: Tahoma, sans-serif;
-            background-color: #f4f4f9;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            text-align: right;
-            direction: rtl;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        header {
-            background-color: #1b3b2b;
-            color: #d4af37;
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
             padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            color: #1e293b;
+            font-size: 24px;
+        }
+        .product-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        h1 {
-            margin: 0;
-            font-size: 2.2em;
-        }
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .product {
-            border: 1px solid #ddd;
-            padding: 15px;
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
             margin-bottom: 15px;
-            border-radius: 5px;
         }
-        .product video {
+        .product-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+        .product-description {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+        .buy-btn {
+            display: block;
             width: 100%;
-            max-height: 300px;
-            border-radius: 5px;
-            margin-top: 10px;
-            background: #000;
-        }
-        .btn {
-            background-color: #1b3b2b;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 14px;
+            background-color: #e62e04;
+            color: #ffffff;
             text-decoration: none;
-            display: inline-block;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 12px rgba(230, 46, 4, 0.3);
         }
-        .btn:hover {
-            background-color: #2c5e43;
+        .buy-btn:hover {
+            background-color: #cd2803;
         }
-        .btn-fb {
-            background-color: #1877f2;
-        }
-        .btn-fb:hover {
-            background-color: #145dbf;
-        }
-        .btn-link {
-            background: none;
-            border: none;
-            color: #1877f2;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 0;
-            margin-top: 10px;
-            display: inline-block;
-            font-family: Tahoma, sans-serif;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        #admin-section, #admin-dashboard {
-            display: none;
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #94a3b8;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>abdelkader M.s.F</h1>
-    </header>
-
-    <div class="container">
-        <h2>قائمة المنتجات والعروض الحالية</h2>
-        <div class="product">
-            <h3>جهاز عرض (DataShow)</h3>
-            <p>جودة عالية ودقة عرض ممتازة.</p>
-            
-            <video controls>
-                <source src="product.mp4" type="video/mp4">
-                متصفحك لا يدعم عرض الفيديو.
-            </video>
-
-            <p style="color: #a91e44; font-weight: bold; font-size: 1.2em; margin-top: 10px;">
-                <span id="product-price">25,000</span> دج
-            </p>
-
-            <button class="btn" onclick="alert('تمت الإضافة للسلة')">أضف للسلة</button>
-            <a href="https://www.facebook.com/mariya.bilik.9" target="_blank" class="btn btn-fb" style="margin-top: 10px;">تواصل معنا عبر فيسبوك</a>
-        </div>
-
-        <hr style="margin: 30px 0;">
-
-        <h2>إتمام طلب شراء أو استفسار</h2>
-        <form onsubmit="event.preventDefault(); alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');">
-            <label>الاسم واللقب:</label>
-            <input type="text" placeholder="اكتب اسمك هنا..." required>
-            
-            <label>رقم الهاتف:</label>
-            <input type="tel" placeholder="رقم الهاتف للتواصل..." required>
-            
-            <label>الطلب أو الاستفسار:</label>
-            <textarea rows="4" placeholder="اكتب تفاصيل طلبك..."></textarea>
-            
-            <button type="submit" class="btn">إرسال الطلب الآن</button>
-        </form>
-
-        <div style="text-align: center; margin-top: 15px;">
-            <a href="https://www.facebook.com/mariya.bilik.9" target="_blank" class="btn btn-fb">أو أرسل طلبك مباشرة عبر حسابنا على فيسبوك</a>
-        </div>
-
-        <hr style="margin: 30px 0;">
-
-        <!-- تسجيل دخول المالك -->
-        <div id="admin-section" style="background: #fafafa; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
-            <h3>تسجيل دخول المالك</h3>
-            <label>البريد الإلكتروني:</label>
-            <input type="email" id="login-email" value="gada12@gmail.com">
-            
-            <label>كلمة السر:</label>
-            <input type="password" id="login-pass" placeholder="اكتب كلمة المرور...">
-            
-            <button class="btn" onclick="checkLogin()">تسجيل الدخول</button>
-            <br>
-            <button class="btn-link" onclick="forgotPassword()">نسيت كلمة السر؟</button>
-        </div>
-
-        <!-- لوحة التحكم -->
-        <div id="admin-dashboard" style="background: #e8f5e9; padding: 15px; border-radius: 5px; border: 1px solid #c8e6c9; margin-top: 15px;">
-            <h3 style="color: #2e7d32;">لوحة تحكم وتعديل المتجر (مرحباً بك يا عبد القادر)</h3>
-            
-            <label>تعديل سعر المنتج (دج):</label>
-            <input type="text" id="new-price-input" value="25,000">
-            <button class="btn" onclick="updatePrice()">حفظ السعر الجديد</button>
-        </div>
+    <div class="header">
+        <h1>متجر M.S.F الترويجي</h1>
     </div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('admin') === '123') {
-            document.getElementById('admin-section').style.display = 'block';
-        }
+    <div class="product-card">
+        <!-- يمكنك تغيير رابط الصورة برابط صورة المنتج الخاص بك -->
+        <img src="https://ae01.alicdn.com/kf/S8f98a2b53b814a0cb8b51d4512b9d628P.jpg" alt="DataShow Projector">
+        <h2 class="product-title">جهاز العرض السينمائي (DataShow Smart HD)</h2>
+        <p class="product-description">استمتع بتجربة سينمائية فريدة في المنزل، شاشة عرض عالية الدقة ومناسبة لمشاهدة المباريات والأفلام بأعلى جودة.</p>
+        
+        <!-- ضع رابط العمولة الخاص بك مكان الكلمة المحددة أدناه -->
+        <a href="ضع_رابط_الأفلييت_هنا" class="buy-btn" target="_blank" rel="noopener noreferrer">
+            اشترِ الآن من AliExpress
+        </a>
+    </div>
 
-        function checkLogin() {
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-
-            if (email === "daka12@gmail.com" && pass === "1993www@!") {
-                alert('تم تسجيل الدخول بنجاح!');
-                document.getElementById('admin-section').style.display = 'none';
-                document.getElementById('admin-dashboard').style.display = 'block';
-            } else {
-                alert('البريد الإلكتروني أو كلمة المرور غير صحيحة!');
-            }
-        }
-
-        function forgotPassword() {
-            alert('كلمة المرور الخاصة بحسابك (gada12@gmail.com) هي: 123456');
-        }
-
-        function updatePrice() {
-            const newPrice = document.getElementById('new-price-input').value;
-            document.getElementById('product-price').innerText = newPrice;
-            alert('تم تحديث السعر بنجاح!');
-        }
-    </script>
+    <div class="footer">
+        <p>© جميع الحقوق محفوظة - متجر عبد القادر</p>
+    </div>
 
 </body>
 </html>
