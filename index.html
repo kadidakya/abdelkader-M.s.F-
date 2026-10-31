@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تحميل الفيديوهات بدون علامة مائية - M.S.F</title>
+  <title>أداة M.S.F لتحميل الفيديوهات</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -21,25 +21,29 @@
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      max-width: 450px;
+      max-width: 480px;
       width: 100%;
       text-align: center;
     }
     h2 {
       color: #333;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #666;
+      font-size: 14px;
     }
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 12px;
       margin-top: 20px;
     }
     input[type="text"] {
       padding: 12px 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       outline: none;
       direction: ltr;
       text-align: left;
@@ -47,19 +51,32 @@
     input[type="text"]:focus {
       border-color: #e62e04;
     }
-    .btn-download {
+    .btn-action {
       background-color: #e62e04;
       color: #fff;
-      padding: 12px 25px;
+      padding: 12px 20px;
       border: none;
       font-weight: bold;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: background 0.3s;
+      text-decoration: none;
     }
-    .btn-download:hover {
+    .btn-action:hover {
       background-color: #cc2900;
+    }
+    .btn-termux {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      font-family: monospace;
+    }
+    .btn-termux:hover {
+      background-color: #333;
+    }
+    .result {
+      margin-top: 20px;
+      word-break: break-all;
     }
     .footer {
       margin-top: 20px;
@@ -71,13 +88,16 @@
 <body>
 
   <div class="container">
-    <h2>تحميل فيديو بدون حقوق</h2>
-    <p>أدخل رابط الفيديو هنا لتحميله بصيغة صافية:</p>
+    <h2>أداة M.S.F لتحميل الفيديوهات</h2>
+    <p>ضع رابط الفيديو لتنزيله أو للحصول على أمر Termux جاهز:</p>
     
     <div class="input-group">
       <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/... لصق الرابط هنا">
-      <button class="btn-download" onclick="startDownload()">تحميل الآن</button>
+      <button class="btn-action" onclick="downloadDirectly()">تنزيل مباشر من الموقع</button>
+      <button class="btn-action btn-termux" onclick="copyGetCommand()">نسخ أمر get لـ Termux</button>
     </div>
+
+    <div class="result" id="resultArea"></div>
   </div>
 
   <div class="footer">
@@ -85,14 +105,48 @@
   </div>
 
   <script>
-    function startDownload() {
+    async function downloadDirectly() {
       const url = document.getElementById('videoUrl').value.trim();
+      const resultArea = document.getElementById('resultArea');
+      
       if(!url) {
-        alert('الرجاء إدخال رابط صالح أولاً!');
+        alert('الرجاء إدخال رابط الفيديو أولاً!');
         return;
       }
-      alert('جاري معالجة الرابط وتحضير التحميل...');
-      // هنا يمكنك ربط الـ API الخاص بتحميل الفيديوهات مستقبلاً
+
+      resultArea.innerHTML = 'جاري استخراج الفيديو بدون علامة مائية...';
+
+      try {
+        const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+
+        if(data && data.code === 0 && data.data.play) {
+          const downloadLink = data.data.play;
+          resultArea.innerHTML = `
+            <p style="color: green; font-weight: bold;">تم تجهيز الفيديو!</p>
+            <a href="${downloadLink}" target="_blank" class="btn-action" style="display:inline-block; margin-top:10px;">تحميل الملف الآن</a>
+          `;
+        } else {
+          resultArea.innerHTML = '<p style="color: red;">خطأ في جلب الفيديو، تأكد من صحة الرابط.</p>';
+        }
+      } catch (error) {
+        resultArea.innerHTML = '<p style="color: red;">حدث خطأ في الاتصال، حاول مجدداً.</p>';
+      }
+    }
+
+    function copyGetCommand() {
+      const url = document.getElementById('videoUrl').value.trim();
+      if(!url) {
+        alert('الرجاء إدخال رابط الفيديو أولاً!');
+        return;
+      }
+      const command = `get "${url}"`;
+      navigator.clipboard.writeText(command);
+      document.getElementById('resultArea').innerHTML = `
+        <p style="color: #008000; font-weight: bold;">تم نسخ الأمر حافظتك!</p>
+        <code style="background:#eee; padding:5px 10px; border-radius:5px; display:inline-block;">${command}</code>
+        <p style="font-size:12px; color:#555;">افتح Termux والصق الأمر مباشرة ليتم التحميل.</p>
+      `;
     }
   </script>
 
