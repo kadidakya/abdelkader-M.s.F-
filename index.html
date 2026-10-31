@@ -1,3 +1,4 @@
+cat << 'EOF' > index.html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -38,6 +39,13 @@
             margin-bottom: 15px;
             border-radius: 5px;
         }
+        .product video {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            margin-top: 10px;
+            background: #000;
+        }
         .btn {
             background-color: #1b3b2b;
             color: white;
@@ -65,6 +73,10 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+        /* إخفاء لوحة التحكم والتحدث عن العوام افتراضياً */
+        #admin-section {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -78,7 +90,18 @@
         <div class="product">
             <h3>جهاز عرض (DataShow)</h3>
             <p>جودة عالية ودقة عرض ممتازة.</p>
-            <p style="color: #a91e44; font-weight: bold; font-size: 1.2em;">25,000 دج</p>
+            
+            <!-- مكان عرض فيديو المنتج (يمكنك استبدال رابط الفيديو الرابط أو رفع الفيديو لمسارك) -->
+            <video controls>
+                <source src="product-video.mp4" type="video/mp4">
+                متصفحك لا يدعم عرض الفيديو.
+            </video>
+
+            <!-- السعر القابل للتعديل -->
+            <p style="color: #a91e44; font-weight: bold; font-size: 1.2em; margin-top: 10px;">
+                <span id="product-price">25,000</span> دج
+            </p>
+
             <button class="btn" onclick="alert('تمت الإضافة للسلة')">أضف للسلة</button>
             <a href="https://www.facebook.com/mariya.bilik.9" target="_blank" class="btn btn-fb" style="margin-top: 10px;">تواصل معنا عبر فيسبوك</a>
         </div>
@@ -105,18 +128,39 @@
 
         <hr style="margin: 30px 0;">
 
-        <div style="background: #fafafa; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
-            <h3>تسجيل دخول المالك</h3>
-            <label>البريد الإلكتروني:</label>
+        <!-- قسم لوحة تحكم المالك (مخفي ولا يظهر إلا عبر الرابط السري) -->
+        <div id="admin-section" style="background: #fafafa; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
+            <h3>لوحة تحكم وتعديل المتجر (خاص بالمالك)</h3>
+            
+            <label>تعديل سعر المنتج (دج):</label>
+            <input type="text" id="new-price-input" value="25,000">
+            <button class="btn" onclick="updatePrice()">حفظ السعر الجديد</button>
+
+            <hr style="margin: 20px 0;">
+
+            <label>تسجيل دخول المالك:</label>
             <input type="email" value="admin@abdelkader.com">
-            
-            <label>كلمة السر:</label>
-            <input type="password" placeholder="********">
-            
+            <input type="password" placeholder="كلمة المرور">
             <button class="btn">تسجيل الدخول</button>
         </div>
     </div>
 
+    <script>
+        // إظهار لوحة التحكم فقط عند استخدام الرابط السري ?admin=123
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === '123') {
+            document.getElementById('admin-section').style.display = 'block';
+        }
+
+        // دالة لتغيير السعر وتحديثه مباشرة في الصفحة
+        function updatePrice() {
+            const newPrice = document.getElementById('new-price-input').value;
+            document.getElementById('product-price').innerText = newPrice;
+            alert('تم تحديث السعر بنجاح!');
+        }
+    </script>
+
 </body>
 </html>
+EOF
 
