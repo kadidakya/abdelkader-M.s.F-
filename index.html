@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>متجر M.S.F الترويجي</title>
+  <title>تحميل الفيديوهات بدون علامة مائية - M.S.F</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,53 +13,88 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
-    .header {
+    .container {
       background: #fff;
-      padding: 15px 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
-    }
-    .card {
-      background: #fff;
-      padding: 25px;
+      padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      max-width: 450px;
+      width: 100%;
       text-align: center;
     }
-    .btn-buy {
-      display: inline-block;
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      direction: ltr;
+      text-align: left;
+    }
+    input[type="text"]:focus {
+      border-color: #e62e04;
+    }
+    .btn-download {
       background-color: #e62e04;
       color: #fff;
       padding: 12px 25px;
-      text-decoration: none;
+      border: none;
       font-weight: bold;
       border-radius: 8px;
-      margin-top: 15px;
+      font-size: 16px;
+      cursor: pointer;
       transition: background 0.3s;
     }
-    .btn-buy:hover {
+    .btn-download:hover {
       background-color: #cc2900;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #777;
     }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h2>متجر M.S.F </h2>
+  <div class="container">
+    <h2>تحميل فيديو بدون حقوق</h2>
+    <p>أدخل رابط الفيديو هنا لتحميله بصيغة صافية:</p>
+    
+    <div class="input-group">
+      <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/... لصق الرابط هنا">
+      <button class="btn-download" onclick="startDownload()">تحميل الآن</button>
+    </div>
   </div>
 
-  <div class="card">
-    <h3> (DataShow Smart HD)</h3>
-    <p>   </p>
-    
-    <!--  -->
-    <a href="https://kadidakya.github.io/abdelkader-M.s.F-/" target="_blank" class="btn-buy">
-      اشترِ الآن من AliExpress
-    </a>
+  <div class="footer">
+    <p>© جميع الحقوق محفوظة - متجر M.S.F</p>
   </div>
+
+  <script>
+    function startDownload() {
+      const url = document.getElementById('videoUrl').value.trim();
+      if(!url) {
+        alert('الرجاء إدخال رابط صالح أولاً!');
+        return;
+      }
+      alert('جاري معالجة الرابط وتحضير التحميل...');
+      // هنا يمكنك ربط الـ API الخاص بتحميل الفيديوهات مستقبلاً
+    }
+  </script>
 
 </body>
 </html>
