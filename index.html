@@ -67,15 +67,6 @@
     .btn-action:hover {
       background-color: #cc2900;
     }
-    .btn-termux {
-      background-color: #1e1e1e;
-      color: #00ff00;
-      font-family: monospace;
-      font-weight: bold;
-    }
-    .btn-termux:hover {
-      background-color: #333;
-    }
     .result {
       margin-top: 20px;
       word-break: break-all;
@@ -98,7 +89,6 @@
     <div class="input-group">
       <input type="text" id="videoUrl" placeholder="ضع رابط (YouTube / Facebook / Instagram / TikTok) هنا">
       <button class="btn-action" onclick="downloadToPhone()">تنزيل وتخزين في الهاتف</button>
-      <button class="btn-action btn-termux" onclick="copyGetCommand()">get</button>
     </div>
 
     <div class="result" id="resultArea"></div>
@@ -155,20 +145,6 @@
       } catch (error) {
         resultArea.innerHTML = '<p style="color: red;">حدث خطأ في الاتصال، حاول مجدداً.</p>';
       }
-    }
-
-    function copyGetCommand() {
-      const url = document.getElementById('videoUrl').value.trim();
-      if(!url) {
-        alert('الرجاء إدخال رابط الفيديو أولاً!');
-        return;
-      }
-      const command = `get "${url}"`;
-      navigator.clipboard.writeText(command);
-      document.getElementById('resultArea').innerHTML = `
-        <p style="color: #008000; font-weight: bold;">تم نسخ أمر التحميل بنجاح!</p>
-        <code style="background:#eee; padding:5px 10px; border-radius:5px; display:inline-block; font-family: monospace; color: #1e1e1e;">${command}</code>
-      `;
     }
   </script>
 
