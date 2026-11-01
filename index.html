@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>أداة M.S.F لتحميل الفيديوهات</title>
+  <title>M.S.F لتحميل الفيديوهات</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-image: url('image_3.png');
+      background: linear-gradient(135deg, #111827, #1f2937);
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -21,32 +21,28 @@
       min-height: 100vh;
     }
     .container {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.95);
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       max-width: 480px;
       width: 100%;
       text-align: center;
       z-index: 1;
     }
     h2 {
-      color: #333;
-      margin-bottom: 10px;
-    }
-    p {
-      color: #666;
-      font-size: 14px;
+      color: #111;
+      margin-bottom: 20px;
     }
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 15px;
+      margin-top: 10px;
     }
     input[type="text"] {
       padding: 12px 15px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 15px;
       outline: none;
@@ -75,6 +71,7 @@
       background-color: #1e1e1e;
       color: #00ff00;
       font-family: monospace;
+      font-weight: bold;
     }
     .btn-termux:hover {
       background-color: #333;
@@ -86,9 +83,9 @@
     .footer {
       margin-top: 20px;
       font-size: 14px;
-      color: #333;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 5px 10px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 12px;
       border-radius: 5px;
     }
   </style>
@@ -96,20 +93,19 @@
 <body>
 
   <div class="container">
-    <h2>أداة M.S.F لتحميل الفيديوهات</h2>
-    <p>ضع رابط الفيديو لتخزينه في ذاكرة الهاتف أو نسخ أمر Termux:</p>
+    <h2>M.S.F لتحميل الفيديوهات</h2>
     
     <div class="input-group">
-      <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/... لصق الرابط هنا">
+      <input type="text" id="videoUrl" placeholder="ضع رابط (YouTube / Facebook / Instagram / TikTok) هنا">
       <button class="btn-action" onclick="downloadToPhone()">تنزيل وتخزين في الهاتف</button>
-      <button class="btn-action btn-termux" onclick="copyGetCommand()">نسخ أمر get لـ Termux</button>
+      <button class="btn-action btn-termux" onclick="copyGetCommand()">get</button>
     </div>
 
     <div class="result" id="resultArea"></div>
   </div>
 
   <div class="footer">
-    <p>© جميع الحقوق محفوظة - m.s.f M.S.F</p>
+    <p>© جميع الحقوق محفوظة - M.S.F</p>
   </div>
 
   <script>
@@ -122,22 +118,39 @@
         return;
       }
 
-      resultArea.innerHTML = 'جاري جلب الفيديو بدون علامة مائية لتحميله...';
+      resultArea.innerHTML = 'جاري استخراج الفيديو من المنصة...';
 
       try {
-        const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
-        const data = await response.json();
+        let downloadLink = '';
+        
+        if (url.includes('tiktok.com')) {
+          const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
+          const data = await response.json();
+          if(data && data.code === 0 && data.data.play) {
+            downloadLink = data.data.play;
+          }
+        } else {
+          const response = await fetch(`https://api.cobalt.tools/api/json`, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: url })
+          });
+          const data = await response.json();
+          if(data && data.url) {
+            downloadLink = data.url;
+          }
+        }
 
-        if(data && data.code === 0 && data.data.play) {
-          const downloadLink = data.data.play;
-          
-          // إنشاء رابط تحميل مباشر يجبر المتصفح على تخزين الملف في ذاكرة الهاتف
+        if(downloadLink) {
           resultArea.innerHTML = `
             <p style="color: green; font-weight: bold;">تم تجهيز الفيديو بنجاح!</p>
             <a href="${downloadLink}" download="video_MSF.mp4" target="_blank" class="btn-action" style="display:inline-block; margin-top:10px;">اضغط هنا لحفظ الفيديو في الهاتف</a>
           `;
         } else {
-          resultArea.innerHTML = '<p style="color: red;">خطأ في جلب الفيديو، تأكد من صحة الرابط.</p>';
+          resultArea.innerHTML = '<p style="color: red;">خطأ في جلب الفيديو، تأكد من صحة الرابط أو الخصوصية.</p>';
         }
       } catch (error) {
         resultArea.innerHTML = '<p style="color: red;">حدث خطأ في الاتصال، حاول مجدداً.</p>';
@@ -153,12 +166,12 @@
       const command = `get "${url}"`;
       navigator.clipboard.writeText(command);
       document.getElementById('resultArea').innerHTML = `
-        <p style="color: #008000; font-weight: bold;"> !</p>
+        <p style="color: #008000; font-weight: bold;">تم نسخ أمر التحميل بنجاح!</p>
         <code style="background:#eee; padding:5px 10px; border-radius:5px; display:inline-block; font-family: monospace; color: #1e1e1e;">${command}</code>
-        <p style="font-size:12px; color:#555;">افتح Termux والصق  .</p>
       `;
     }
   </script>
 
 </body>
 </html>
+
