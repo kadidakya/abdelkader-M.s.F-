@@ -95,7 +95,7 @@
         <p>ألصق رابط الفيديو أدناه وسيظهر لك زر التحميل المباشر</p>
         
         <input type="text" id="urlInput" placeholder="أدخل الرابط هنا...">
-        <button onclick="fetchVideo()">جلب رابط التحميل</button>
+        <button onclick="fetchVideo()">تحميل الآن 📥</button>
         <div id="result"></div>
     </div>
 
@@ -123,7 +123,7 @@
                     const videoUrl = data.data.play;
                     resultDiv.innerHTML = `
                         <p style="color: #22c55e; margin: 10px 0 5px 0; font-size:13px;">تم استخراج الفيديو بنجاح!</p>
-                        <a class="download-btn" href="${videoUrl}" target="_blank">تحميل الفيديو إلى الهاتف 📥</a>
+                        <a class="download-btn" href="${videoUrl}" target="_blank">اضغط هنا لحفظ الفيديو في الهاتف 📥</a>
                     `;
                 } else {
                     resultDiv.innerHTML = '<span style="color: #ef4444;">فشل جلب الفيديو، تأكد من صحة الرابط.</span>';
