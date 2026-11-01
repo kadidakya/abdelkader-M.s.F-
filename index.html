@@ -50,6 +50,10 @@
         button:hover {
             background: #2563eb;
         }
+        #result {
+            margin-top: 15px;
+            font-size: 14px;
+        }
         footer {
             margin-top: 20px;
             font-size: 13px;
@@ -65,6 +69,7 @@
         
         <input type="text" id="urlInput" placeholder="أدخل الرابط هنا...">
         <button onclick="downloadVideo()">تحميل إلى الهاتف</button>
+        <div id="result"></div>
     </div>
 
     <footer>
@@ -74,15 +79,23 @@
     <script>
         function downloadVideo() {
             const url = document.getElementById('urlInput').value.trim();
+            const resultDiv = document.getElementById('result');
+            
             if (!url) {
                 alert('الرجاء إدخال رابط صحيح أولاً!');
                 return;
             }
-            // توجيه الرابط مباشرة إلى أداة تحميل عامة وسريعة لحفظه في الهاتف
-            window.open('https://co.wuk.sh/' + encodeURIComponent(url), '_blank');
+            
+            resultDiv.innerHTML = '<span style="color: #38bdf8;">جاري تجهيز رابط التحميل... ⏳</span>';
+            
+            // استخدام خدمة API سريعة ومجانية لمعالجة روابط الفيديوهات بدون علامة مائية
+            setTimeout(() => {
+                const encodedUrl = encodeURIComponent(url);
+                // توجيه المستخدم إلى نافذة التحميل المباشر
+                resultDiv.innerHTML = `<a href="https://tikwm.com/api/?url=${encodedUrl}" target="_blank" style="display:inline-اضافة; margin-top:10px; color:#22c55e; font-weight:bold; text-decoration:underline;">اضغط هنا لتحميل الفيديو بصيغة MP4 📥</a>`;
+            }, 1000);
         }
     </script>
 
 </body>
 </html>
-
