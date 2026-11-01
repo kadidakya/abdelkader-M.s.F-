@@ -1,93 +1,88 @@
-import os
-from flask import Flask, render_template_string, request, jsonify, send_file
-import yt_dlp
-
-app = Flask(__name__)
-
-# قالب HTML بسيط وسريع للتصميم
-HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحميل الفيديوهات بدون علامة مائية</title>
+    <title>تحميل الفيديوهات</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 50px 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        input[type="text"] { width: 80%; padding: 12px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 16px; margin-bottom: 15px; }
-        button { padding: 12px 25px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #2563eb; }
-        #result { margin-top: 20px; word-break: break-all; }
-        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #22c55e; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        body {
+            font-family: Tahoma, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>تحميل فيديوهات بدون علامة مائية</h2>
-        <p>ضع رابط الفيديو (تيك توك، انستغرام، يوتيوب، إلخ)</p>
-        <input type="text" id="url" placeholder="أدخل الرابط هنا...">
-        <br>
-        <button onclick="getVideo()">الحصول على الرابط</button>
-        <div id="result"></div>
+        <h2>تحميل الفيديوهات بدون علامة مائية</h2>
+        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px;">ضع رابط الفيديو من أي منصة وسيبدأ التحميل فوراً</p>
+        
+        <input type="text" id="urlInput" placeholder="أدخل الرابط هنا...">
+        <button onclick="downloadVideo()">تحميل إلى الهاتف</button>
     </div>
 
+    <footer>
+        جميع الحقوق محفوظة m.s.f
+    </footer>
+
     <script>
-        async function getVideo() {
-            const url = document.getElementById('url').value;
-            const resultDiv = document.getElementById('result');
-            if(!url) { alert('الرجاء إدخال رابط صحيح'); return; }
-            
-            resultDiv.innerHTML = "جاري المعالجة... ⏳";
-            
-            const response = await fetch('/process', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: url })
-            });
-            
-            const data = await response.json();
-            if(data.error) {
-                resultDiv.innerHTML = `<p style="color: #ef4444;">حدث خطأ: ${data.error}</p>`;
-            } else {
-                resultDiv.innerHTML = `
-                    <h3>${data.title || 'فيديو'}</h3>
-                    <a class="download-btn" href="${data.download_url}" target="_blank">تحميل الفيديو مباشرة 📥</a>
-                `;
+        function downloadVideo() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) {
+                alert('الرجاء إدخال رابط صحيح أولاً!');
+                return;
             }
+            // توجيه الرابط مباشرة إلى أداة تحميل عامة وسريعة لحفظه في الهاتف
+            window.open('https://co.wuk.sh/' + encodeURIComponent(url), '_blank');
         }
     </script>
+
 </body>
 </html>
-"""
-
-@app.route('/')
-def index():
-    return render_template_string(HTML_TEMPLATE)
-
-@app.route('/process', methods=['POST'])
-def process():
-    data = request.get_json()
-    url = data.get('url')
-    if not url:
-        return jsonify({'error': 'الرابط غير مفقود'}), 400
-
-    ydl_opts = {
-        'format': 'best',
-        'quiet': True,
-    }
-
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            # استخراج رابط التحميل المباشر
-            video_url = info.get('url')
-            title = info.get('title', 'video')
-            return jsonify({'download_url': video_url, 'title': title})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
 
