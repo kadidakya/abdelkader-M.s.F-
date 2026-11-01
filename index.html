@@ -95,7 +95,7 @@
         <p>ألصق رابط الفيديو أدناه وسيظهر لك زر التحميل المباشر</p>
         
         <input type="text" id="urlInput" placeholder="أدخل الرابط هنا...">
-        <button onclick="fetchVideo()">تحميل الآن 📥</button>
+        <button onclick="fetchVideo()">معالجة الفيديو 🚀</button>
         <div id="result"></div>
     </div>
 
@@ -113,7 +113,7 @@
                 return;
             }
             
-            resultDiv.innerHTML = '<span style="color: #38bdf8;">جاري معالجة الفيديو واستخراج الرابط... ⏳</span>';
+            resultDiv.innerHTML = '<span style="color: #38bdf8;">جاري جلب الفيديو بدون علامة مائية... ⏳</span>';
             
             try {
                 const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
@@ -122,14 +122,14 @@
                 if (data.code === 0 && data.data && data.data.play) {
                     const videoUrl = data.data.play;
                     resultDiv.innerHTML = `
-                        <p style="color: #22c55e; margin: 10px 0 5px 0; font-size:13px;">تم استخراج الفيديو بنجاح!</p>
-                        <a class="download-btn" href="${videoUrl}" target="_blank">اضغط هنا لحفظ الفيديو في الهاتف 📥</a>
+                        <p style="color: #22c55e; margin: 10px 0 5px 0; font-size:13px;">تم المعالجة بنجاح!</p>
+                        <a class="download-btn" href="${videoUrl}" target="_blank">حفظ الفيديو (اضغط مطولاً أو حمل) 📥</a>
                     `;
                 } else {
-                    resultDiv.innerHTML = '<span style="color: #ef4444;">فشل جلب الفيديو، تأكد من صحة الرابط.</span>';
+                    resultDiv.innerHTML = '<span style="color: #ef4444;">فشل في جلب الفيديو، تأكد من صحة الرابط.</span>';
                 }
             } catch (error) {
-                resultDiv.innerHTML = '<span style="color: #ef4444;">حدث خطأ في الاتصال، حاول مرة أخرى.</span>';
+                resultDiv.innerHTML = '<span style="color: #ef4444;">حدث خطأ في الاتصال، حاول مجدداً.</span>';
             }
         }
     </script>
