@@ -105,12 +105,16 @@
         .result-box a {
             display: inline-block;
             margin-top: 10px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             background: #22c55e;
             color: white;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
+            box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+        }
+        .result-box a:hover {
+            background: #16a34a;
         }
         footer {
             margin-top: 25px;
@@ -123,7 +127,7 @@
 
     <div class="container">
         <h1>موقع عبد القادر لتحميل الفيديوهات</h1>
-        <p class="subtitle">حمل الفيديوهات بجودة عالية وبدون علامة مائية</p>
+        <p class="subtitle">حمل الفيديوهات بجودة عالية وبدون علامة مائية مباشرة لهاتفك</p>
 
         <div class="platforms">
             <span class="badge">TikTok</span>
@@ -133,12 +137,12 @@
         </div>
 
         <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="ضع رابط الفيديو هنا..." autocomplete="off">
-            <button onclick="processDownload()">تحميل الفيديو</button>
+            <input type="text" id="videoUrl" placeholder="ضع رابط الفيديو هنا (تيك توك، وغيرها)..." autocomplete="off">
+            <button onclick="fetchVideo()">معالجة واستخراج الفيديو</button>
         </div>
 
         <div id="result" class="result-box">
-            <p id="statusText">جاري معالجة الرابط...</p>
+            <p id="statusText">جاري جلب الفيديو بدون علامة مائية...</p>
             <div id="downloadLinkArea"></div>
         </div>
     </div>
@@ -146,7 +150,7 @@
     <footer>جميع الحقوق محفوظة &copy; Abdelkader M.S.F</footer>
 
     <script>
-        function processDownload() {
+        async function fetchVideo() {
             const url = document.getElementById('videoUrl').value.trim();
             const resultBox = document.getElementById('result');
             const statusText = document.getElementById('statusText');
@@ -158,14 +162,30 @@
             }
 
             resultBox.style.display = 'block';
-            statusText.innerText = 'جاري التحقق من الرابط واستخراج الفيديو...';
+            statusText.innerText = 'جاري الاتصال بالسيرفر لاستخراج الفيديو...';
             downloadArea.innerHTML = '';
 
-            // محاكاة معالجة الرابط برمجياً
-            setTimeout(() => {
-                statusText.innerText = 'تم تجهيز الفيديو بنجاح!';
-                downloadArea.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer">اضغط هنا لتنزيل الفيديو</a>`;
-            }, 1500);
+            try {
+                // استخدام خدمة API مجانية وآمنة لجلب فيديوهات تيك توك بدون علامة مائية
+                const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+
+                if (data && data.code === 0 && data.data && data.data.play) {
+                    const videoDownloadUrl = data.data.play; // رابط الفيديو بدون علامة مائية
+                    statusText.innerText = 'تم تجهيز الفيديو بنجاح!';
+                    
+                    // إنشاء زر تحميل مباشر يجبر المتصفح على حفظه في ذاكرة الهاتف
+                    downloadArea.innerHTML = `
+                        <a href="${videoDownloadUrl}" download="video_abdelkader.mp4" target="_blank">
+                            📥 اضغط هنا لتنزيل الفيديو في الهاتف
+                        </a>
+                    `;
+                } else {
+                    statusText.innerText = 'عذراً، لم يتم العثور على الفيديو. تأكد من صحة الرابط.';
+                }
+            } catch (error) {
+                statusText.innerText = 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.';
+            }
         }
     </script>
 
