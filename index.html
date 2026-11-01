@@ -63,6 +63,7 @@
       cursor: pointer;
       transition: background 0.3s;
       text-decoration: none;
+      display: inline-block;
     }
     .btn-action:hover {
       background-color: #cc2900;
@@ -85,7 +86,7 @@
 
   <div class="container">
     <h2>M.S.F لتحميل الفيديوهات</h2>
-
+    
     <div class="input-group">
       <input type="text" id="videoUrl" placeholder="ضع رابط (YouTube / Facebook / Instagram / TikTok) هنا">
       <button class="btn-action" onclick="downloadToPhone()">تنزيل وتخزين في الهاتف</button>
@@ -102,7 +103,7 @@
     async function downloadToPhone() {
       const url = document.getElementById('videoUrl').value.trim();
       const resultArea = document.getElementById('resultArea');
-
+      
       if(!url) {
         alert('الرجاء إدخال رابط الفيديو أولاً!');
         return;
@@ -112,35 +113,35 @@
 
       try {
         let downloadLink = '';
-
-        if (url.includes('tiktok.com')) {
-          const response = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
-          const data = await response.json();
-          if(data && data.code === 0 && data.data.play) {
-            downloadLink = data.data.play;
-          }
-        } else {
-          const response = await fetch(`https://api.cobalt.tools/api/json`, {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ url: url })
-          });
-          const data = await response.json();
-          if(data && data.url) {
-            downloadLink = data.url;
-          }
+        
+        // استخدام خدمة متعددة المنصات قوية جداً تدعم فيسبوك ويوتيوب وإنستغرام وتيك توك
+        const response = await fetch(`https://api.cobalt.tools/api/json`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            url: url,
+            vCodec: "h264",
+            vQuality: "720",
+            dubLang: false
+          })
+        });
+        
+        const data = await response.json();
+        
+        if(data && (data.url || data.picker)) {
+          downloadLink = data.url || (data.picker && data.picker[0] ? data.picker[0].url : '');
         }
 
         if(downloadLink) {
           resultArea.innerHTML = `
             <p style="color: green; font-weight: bold;">تم تجهيز الفيديو بنجاح!</p>
-            <a href="${downloadLink}" download="video_MSF.mp4" target="_blank" class="btn-action" style="display:inline-block; margin-top:10px;">اضغط هنا لحفظ الفيديو في الهاتف</a>
+            <a href="${downloadLink}" download="video_MSF.mp4" target="_blank" class="btn-action" style="margin-top:10px;">اضغط هنا لحفظ الفيديو في الهاتف</a>
           `;
         } else {
-          resultArea.innerHTML = '<p style="color: red;">خطأ في جلب الفيديو، تأكد من صحة الرابط أو الخصوصية.</p>';
+          resultArea.innerHTML = '<p style="color: red;">خطأ في جلب الفيديو، تأكد من أن الرابط عام وليس خاصاً.</p>';
         }
       } catch (error) {
         resultArea.innerHTML = '<p style="color: red;">حدث خطأ في الاتصال، حاول مجدداً.</p>';
