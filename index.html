@@ -1,47 +1,93 @@
+import os
+from flask import Flask, render_template_string, request, jsonify, send_file
+import yt_dlp
+
+app = Flask(__name__)
+
+# قالب HTML بسيط وسريع للتصميم
+HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdelkader M.S.F</title>
-    <meta name="google-site-verification" content="aakEaeWHieKlphD1ueKYA81FEYdrjPbzYHBqYeZCnoA" />
+    <title>تحميل الفيديوهات بدون علامة مائية</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #111827, #1f2937);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            color: #ffffff;
-        }
-        .container {
-            text-align: center;
-            padding: 30px;
-            background: rgba(31, 41, 55, 0.8);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            max-width: 500px;
-            width: 100%;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
+        body { font-family: Tahoma, sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 50px 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input[type="text"] { width: 80%; padding: 12px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 16px; margin-bottom: 15px; }
+        button { padding: 12px 25px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #2563eb; }
+        #result { margin-top: 20px; word-break: break-all; }
+        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #22c55e; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>مرحباً بك في موقع عبد القادر</h1>
-        <p>جاري تطوير وتحديث الموقع لتحميل الفيديوهات بكفاءة عالية.</p>
+        <h2>تحميل فيديوهات بدون علامة مائية</h2>
+        <p>ضع رابط الفيديو (تيك توك، انستغرام، يوتيوب، إلخ)</p>
+        <input type="text" id="url" placeholder="أدخل الرابط هنا...">
+        <br>
+        <button onclick="getVideo()">الحصول على الرابط</button>
+        <div id="result"></div>
     </div>
+
+    <script>
+        async function getVideo() {
+            const url = document.getElementById('url').value;
+            const resultDiv = document.getElementById('result');
+            if(!url) { alert('الرجاء إدخال رابط صحيح'); return; }
+            
+            resultDiv.innerHTML = "جاري المعالجة... ⏳";
+            
+            const response = await fetch('/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            });
+            
+            const data = await response.json();
+            if(data.error) {
+                resultDiv.innerHTML = `<p style="color: #ef4444;">حدث خطأ: ${data.error}</p>`;
+            } else {
+                resultDiv.innerHTML = `
+                    <h3>${data.title || 'فيديو'}</h3>
+                    <a class="download-btn" href="${data.download_url}" target="_blank">تحميل الفيديو مباشرة 📥</a>
+                `;
+            }
+        }
+    </script>
 </body>
 </html>
+"""
+
+@app.route('/')
+def index():
+    return render_template_string(HTML_TEMPLATE)
+
+@app.route('/process', methods=['POST'])
+def process():
+    data = request.get_json()
+    url = data.get('url')
+    if not url:
+        return jsonify({'error': 'الرابط غير مفقود'}), 400
+
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            # استخراج رابط التحميل المباشر
+            video_url = info.get('url')
+            title = info.get('title', 'video')
+            return jsonify({'download_url': video_url, 'title': title})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
 
